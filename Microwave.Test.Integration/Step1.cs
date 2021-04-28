@@ -25,8 +25,8 @@ namespace Microwave.Test.Integration
         public void Test_TurnOn_CorrectOutput()
         {
             _light.TurnOn();
-
-
         }
+
+
     }
 }
