@@ -3,6 +3,7 @@ using System.IO;
 using Microwave.Classes.Boundary;
 using Microwave.Classes.Interfaces;
 using NUnit.Framework;
+using NUnit.Framework.Internal;
 
 namespace Microwave.Test.Integration
 {
