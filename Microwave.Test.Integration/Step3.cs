@@ -21,6 +21,7 @@ namespace Microwave.Test.Integration
         private StringWriter _stringWriter;
         private ITimer _timer;
         private CookController _sut;
+        private IUserInterface _UI;
 
         [SetUp]
         public void Setup()
@@ -32,6 +33,7 @@ namespace Microwave.Test.Integration
             _light = new Light(_output);
             _stringWriter = new StringWriter();
             _sut = new CookController(_timer, _display, _powerTube);
+            _UI = Substitute.For<IUserInterface>();
         }
 
         [Test]
@@ -39,12 +41,19 @@ namespace Microwave.Test.Integration
         {
             Console.SetOut(_stringWriter);
             _sut.StartCooking(50, 10000);
-            Thread.Sleep(3000);
+            ManualResetEvent pause = new ManualResetEvent(false);
+            pause.WaitOne(3000);
 
-            //_timer.TimeRemaining.Returns(115);
+            Assert.That(_stringWriter.ToString().Contains("Display shows:") && _stringWriter.ToString().Contains("116"));
+        }
 
-            Assert.That(_stringWriter.ToString().Contains("Display shows:") );
-            //&& _stringWriter.ToString().Contains("1:55")
+        [Test]
+        public void TestTimer_OnTimerTick_CorrectOutput()
+        {
+            _sut.StartCooking(50, 1);
+            Thread.Sleep(1001);
+
+            _UI.Received().CookingIsDone();
         }
     }
 }
