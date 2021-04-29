@@ -37,14 +37,40 @@ namespace Microwave.Test.Integration
         [Test]
         public void TestCookController_Display_OnTimerTick_CorrectOutput()
         {
+            int ticks = 1;
+            
             Console.SetOut(_stringWriter);
-            _sut.StartCooking(50, 10000);
-            Thread.Sleep(3000);
 
-            //_timer.TimeRemaining.Returns(115);
+            ManualResetEvent pause = new ManualResetEvent(false);
 
-            Assert.That(_stringWriter.ToString().Contains("Display shows:") );
-            //&& _stringWriter.ToString().Contains("1:55")
+            int ticksGone = 0;
+
+            _timer.TimerTick += (sender, args) =>
+            {
+                ticksGone++;
+                if (ticksGone >= ticks)
+                    pause.Set();
+            };
+            _sut.StartCooking(50, 5000);
+
+            // wait for ticks, only a little longer
+            pause.WaitOne(ticks * 1000 + 100);
+
+            //Assert.That(uut.TimeRemaining, Is.EqualTo(5000 - ticks * 1000));
+            Assert.That(_stringWriter.ToString().Contains("Display shows:") && _stringWriter.ToString().Contains(Convert.ToString((5000-ticks*1000)/60)));
+        }
+
+        [Test]
+        public void TestCookController_Moresimple_Display_OnTimerTick_CorrectOutput()
+        {
+            Console.SetOut(_stringWriter);
+
+            _sut.StartCooking(50, 5000);
+
+            Thread.Sleep(1100);
+
+
+            Assert.That(_stringWriter.ToString().Contains("Display shows:") && _stringWriter.ToString().Contains("66:40"));
         }
     }
 }
