@@ -39,10 +39,37 @@ namespace Microwave.Test.Integration
         [Test]
         public void TestCookController_Display_OnTimerTick_CorrectOutput()
         {
+            int ticks = 1;
+            
             Console.SetOut(_stringWriter);
-            _sut.StartCooking(50, 10000);
+
             ManualResetEvent pause = new ManualResetEvent(false);
-            pause.WaitOne(3000);
+
+            int ticksGone = 0;
+
+            _timer.TimerTick += (sender, args) =>
+            {
+                ticksGone++;
+                if (ticksGone >= ticks)
+                    pause.Set();
+            };
+            _sut.StartCooking(50, 5000);
+
+            // wait for ticks, only a little longer
+            pause.WaitOne(ticks * 1000 + 100);
+
+            //Assert.That(uut.TimeRemaining, Is.EqualTo(5000 - ticks * 1000));
+            Assert.That(_stringWriter.ToString().Contains("Display shows:") && _stringWriter.ToString().Contains(Convert.ToString((5000-ticks*1000)/60)));
+        }
+
+        [Test]
+        public void TestCookController_Moresimple_Display_OnTimerTick_CorrectOutput()
+        {
+            Console.SetOut(_stringWriter);
+
+            _sut.StartCooking(50, 5000);
+
+            Thread.Sleep(1100);
 
             Assert.That(_stringWriter.ToString().Contains("Display shows:") && _stringWriter.ToString().Contains("116"));
         }
@@ -53,7 +80,7 @@ namespace Microwave.Test.Integration
             _sut.StartCooking(50, 1);
             Thread.Sleep(1001);
 
-            _UI.Received().CookingIsDone();
+            Assert.That(_stringWriter.ToString().Contains("Display shows:") && _stringWriter.ToString().Contains("66:40"));
         }
     }
 }
