@@ -32,13 +32,14 @@ namespace Microwave.Test.Integration
             _powerTube = new PowerTube(_output);
             _light = new Light(_output);
             _stringWriter = new StringWriter();
-            _sut = new CookController(_timer, _display, _powerTube);
             _UI = Substitute.For<IUserInterface>();
+            _sut = new CookController(_timer, _display, _powerTube, _UI);
+
         }
 
 
         [Test]
-        public void TestCookController_Moresimple_Display_OnTimerTick_CorrectOutput()
+        public void TestCookController__Display_OnTimerTick_CorrectTime()
         {
             Console.SetOut(_stringWriter);
 
@@ -50,5 +51,14 @@ namespace Microwave.Test.Integration
         }
 
 
+        [Test]
+        public void TestCookController__UserInterface_OnTimerTick_CallsUICookingIsDone()
+        {
+            _sut.StartCooking(50, 2);
+
+            Thread.Sleep(2100);
+
+            _UI.Received().CookingIsDone();
+        }
     }
 }
