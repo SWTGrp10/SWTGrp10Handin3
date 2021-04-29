@@ -57,6 +57,18 @@ namespace Microwave.Test.Integration
         }
 
         [Test]
+        public void TestUserInterface_LightOff_CorrectOutput()
+        {
+            Console.SetOut(_stringWriter);
+ 
+            _door.Opened += Raise.EventWith(this, EventArgs.Empty);
+            _door.Closed += Raise.EventWith(this, EventArgs.Empty);
+
+            Assert.That(_stringWriter.ToString().Contains("Light") && _stringWriter.ToString().Contains("off"));
+        }
+
+        
+        [Test]
         public void TestUserInterface_CookController_CorrectOutput()
         {
             Console.SetOut(_stringWriter);
