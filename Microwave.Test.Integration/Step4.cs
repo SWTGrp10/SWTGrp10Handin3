@@ -48,12 +48,27 @@ namespace Microwave.Test.Integration
         public void TestUserInterface_LightOn_CorrectOutput()
         {
             Console.SetOut(_stringWriter);
+
             // Also checks if TimeButton is subscribed
             _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
             // Now in SetPower
             _door.Opened += Raise.EventWith(this, EventArgs.Empty);
 
             Assert.That(_stringWriter.ToString().Contains("Light") && _stringWriter.ToString().Contains("on"));
+        }
+
+        [Test]
+        public void TestUserInterface_LightOff_CorrectOutput()
+        {
+            Console.SetOut(_stringWriter);
+
+            // Also checks if TimeButton is subscribed
+            _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            // Now in SetPower
+            _door.Opened += Raise.EventWith(this, EventArgs.Empty);
+            _door.Closed += Raise.EventWith(this, EventArgs.Empty);
+
+            Assert.That(_stringWriter.ToString().Contains("Light") && _stringWriter.ToString().Contains("off"));
         }
 
         [Test]
@@ -70,14 +85,73 @@ namespace Microwave.Test.Integration
         }
 
         [Test]
-        public void TestUserInterface_Display_CorrectOutput()
+        public void TestUserInterface_DisplayShowPower_CorrectOutput()
         {
             Console.SetOut(_stringWriter);
             _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
             
 
             Assert.That(_stringWriter.ToString().Contains("Display shows") && _stringWriter.ToString().Contains("W"));
+        }
 
+        [Test]
+        public void TestUserInterface_DisplayShowTime_CorrectOutput()
+        {
+            Console.SetOut(_stringWriter);
+            _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            _timeButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
+
+            Assert.That(_stringWriter.ToString().Contains("Display shows") && _stringWriter.ToString().Contains(":"));
+        }
+
+        [Test]
+        public void TestUserInterface_LightOnWhenStartIsPressed_CorrectOutput()
+        {
+            Console.SetOut(_stringWriter);
+            _door.Opened += Raise.EventWith(this, EventArgs.Empty);
+            _door.Closed += Raise.EventWith(this, EventArgs.Empty);
+            _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
+
+            // Now in SetPower
+            _timeButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            // Now in SetTime
+            _startButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
+
+            Assert.That(_stringWriter.ToString().Contains("Light") && _stringWriter.ToString().Contains("on"));
+        }
+
+        [Test]
+        public void TestUserInterface_StartCooking_CorrectOutput()
+        {
+            Console.SetOut(_stringWriter);
+            _door.Opened += Raise.EventWith(this, EventArgs.Empty);
+            _door.Closed += Raise.EventWith(this, EventArgs.Empty);
+            _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
+
+            // Now in SetPower
+            _timeButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            // Now in SetTime
+            _startButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
+
+            Assert.That(_stringWriter.ToString().Contains("PowerTube works with"));
+        }
+
+        [Test]
+        public void TestUserInterface_DisplayClear_CorrectOutput()
+        {
+            Console.SetOut(_stringWriter);
+            _door.Opened += Raise.EventWith(this, EventArgs.Empty);
+            _door.Closed += Raise.EventWith(this, EventArgs.Empty);
+            _buttonPower.Pressed += Raise.EventWith(this, EventArgs.Empty);
+
+            // Now in SetPower
+            _timeButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            // Now in SetTime
+            _startButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
+
+            _sut.CookingIsDone();
+
+            Assert.That(_stringWriter.ToString().Contains("Display cleared"));
         }
 
         [Test]
@@ -90,12 +164,9 @@ namespace Microwave.Test.Integration
             // Now in SetTime
             _startButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
             // Now in cooking
-
             _sut.CookingIsDone();
 
             Assert.That(_stringWriter.ToString().Contains("Light") && _stringWriter.ToString().Contains("off"));
-
-            
         }
 
     }
