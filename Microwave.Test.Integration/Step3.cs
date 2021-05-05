@@ -17,7 +17,6 @@ namespace Microwave.Test.Integration
         private IOutput _output;
         private IDisplay _display;
         private IPowerTube _powerTube;
-        private ILight _light;
         private StringWriter _stringWriter;
         private ITimer _timer;
         private CookController _sut;
@@ -30,7 +29,6 @@ namespace Microwave.Test.Integration
             _output = new Output();
             _display = new Display(_output);
             _powerTube = new PowerTube(_output);
-            _light = new Light(_output);
             _stringWriter = new StringWriter();
             _UI = Substitute.For<IUserInterface>();
             _sut = new CookController(_timer, _display, _powerTube, _UI);
