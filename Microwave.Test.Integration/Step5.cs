@@ -32,7 +32,7 @@ namespace Microwave.Test.Integration
             _timeButton = new Button();
             _startButton = new Button();
             _door = Substitute.For<IDoor>();
-            _timer = Substitute.For<ITimer>();
+            _timer = new Timer();
             _output = new Output();
             _display = new Display(_output);
             _powerTube = new PowerTube(_output);
