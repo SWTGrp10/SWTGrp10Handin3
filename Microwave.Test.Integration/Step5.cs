@@ -40,6 +40,44 @@ namespace Microwave.Test.Integration
             _stringWriter = new StringWriter();
             _cookController = new CookController(_timer, _display, _powerTube);
             _sut = new UserInterface(_buttonPower, _timeButton, _startButton, _door, _display, _light, _cookController);
+
+
+        }
+        [Test]
+        public void TestUserInterface_PowerButton_OnPowerPressed()
+        {
+            Console.SetOut(_stringWriter);
+            // Also checks if TimeButton is subscribed
+            _buttonPower.Press();
+            // Now in SetPower
+
+
+            Assert.That(_stringWriter.ToString().Contains("Display shows: ") && _stringWriter.ToString().Contains("W"));
+        }
+
+        [Test]
+        public void TestUserInterface_TimeButton_OnTimePressed()
+        {
+            Console.SetOut(_stringWriter);
+            // Also checks if TimeButton is subscribed
+            _buttonPower.Press();
+            // Now in SetPower
+            _timeButton.Press();
+
+            Assert.That(_stringWriter.ToString().Contains("Display shows: ") && _stringWriter.ToString().Contains(":"));
+        }
+
+        [Test]
+        public void TestUserInterface_StartCancelButton_OnStartCancelPressed()
+        {
+            Console.SetOut(_stringWriter);
+            // Also checks if TimeButton is subscribed
+            _buttonPower.Press();
+            // Now in SetPower
+            _timeButton.Press();
+            _startButton.Press();
+
+            Assert.That(_stringWriter.ToString().Contains("PowerTube works with"));
         }
     }
 }
