@@ -75,9 +75,9 @@ namespace Microwave.Test.Integration
         }
 
 
-        [TestCase(1)]
-        [TestCase(99)]
-        public void TestPowertube_TurnOn_InputBetween1And100CorrectOutput(int input)
+        [TestCase(50)]
+        [TestCase(700)]
+        public void TestPowertube_TurnOn_InputBetween50And700CorrectOutput(int input)
         {
             Console.SetOut(_stringWriter);
             _powerTube.TurnOn(input);
@@ -85,19 +85,19 @@ namespace Microwave.Test.Integration
             Assert.That(_stringWriter.ToString().Contains("PowerTube works with " + input));
         }
 
-        [TestCase(0)]
-        [TestCase(101)]
-        public void TestPowertube_TurnOn_InputUnder1AndOver100CorrectOutput(int input)
+        [TestCase(49)]
+        [TestCase(701)]
+        public void TestPowertube_TurnOn_InputUnder50AndOver700CorrectOutput(int input)
         {
             Console.SetOut(_stringWriter);
 
             //Tester at korrekt exception kastes og at den korrekte tekst til exception skrives
             ArgumentOutOfRangeException ex = Assert.Throws<ArgumentOutOfRangeException>(() => _powerTube.TurnOn(input));
-            Assert.That(ex.Message.Contains("Must be between 1 and 100 (incl.)"));
+            Assert.That(ex.Message.Contains("Must be between 50 and 700 (incl.)"));
         }
 
-        [TestCase(2)]
-        [TestCase(99)]
+        [TestCase(51)]
+        [TestCase(699)]
         public void TestPowertube_TurnOn_IsOnIsTrue_CorrectOutput(int input)
         {
             _powerTube.TurnOn(input);
